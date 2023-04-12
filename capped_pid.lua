@@ -1,41 +1,41 @@
-integral = 0
-pvOld = 0
-out = 0
+Integral = 0
+ProcessVariableOld = 0
+OutputValue = 0
 											
-max = 1
-min = 0
+MaximumOutput = 1
+MinimumOutput = 0
 											
 function onTick()
 	setpoint = input.getNumber(1)
 	pv = input.getNumber(2)
 	P = input.getNumber(3)
 	I = input.getNumber(4)
-	D = input.getNumber(5)
+	ValueBar = input.getNumber(5)
 											
 	on = input.getBool(1)
 											
 	if on then 	
 		error = setpoint - pv
-		diff = pv - pvOld	
+		diff = pv - ProcessVariableOld	
 											
-		if out < max and out > min then
-			integral = integral + I*error
-			integral = math.max(math.min(integral, max), min)
+		if OutputValue < MaximumOutput and OutputValue > MinimumOutput then
+			Integral = Integral + I*error
+			Integral = math.max(math.min(Integral, MaximumOutput), MinimumOutput)
 		end
 											
 		Kp = P*error
-		Ki = integral
-		Kd = -D*diff
+		Ki = Integral
+		Kd = -ValueBar*diff
 											
-		out = Kp+Ki+Kd
-		out = math.max(math.min(out, max), min)
+		OutputValue = Kp+Ki+Kd
+		OutputValue = math.max(math.min(OutputValue, MaximumOutput), MinimumOutput)
 											
 	else
-		integral = 0
-		out = 0
+		Integral = 0
+		OutputValue = 0
 	end
 											
-	pvOld = pv
+	ProcessVariableOld = pv
 											
-	output.setNumber(1, out)
+	output.setNumber(1, OutputValue)
 end

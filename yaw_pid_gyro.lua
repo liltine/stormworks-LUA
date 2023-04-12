@@ -1,47 +1,47 @@
-integral = 0
-pvOld = 0
-out = 0
+Integral = 0
+ProcessVariableOld = 0
+OutputValue = 0
 											
-max = 1
-min = -1
+MaximumOutput = 1
+MinimumOutput = -1
 											
 function onTick()
-	setpoint = input.getNumber(1)
-	pv = input.getNumber(2)
-	P = input.getNumber(3)
-	I = input.getNumber(4)
-	D = input.getNumber(5)
-	trim = input.getNumber(6)
-	pilotpitch = input.getNumber(7)
+	local setpoint = input.getNumber(1)
+	local processVariable = input.getNumber(2)
+	local P = input.getNumber(3)
+	local I = input.getNumber(4)
+	local D = input.getNumber(5)
+	local trim = input.getNumber(6)
+	local pilotpitch = input.getNumber(7)
 											
-	on = input.getBool(1)
-	right = input.getBool(2)
+	local on = input.getBool(1)
+	local right = input.getBool(2)
 											
 											
 	if on then 	
-		error = setpoint - pv
-		diff = pv - pvOld	
+		error = setpoint - processVariable
+		local diff = processVariable - ProcessVariableOld	
 											
-		if out < max and out > min and math.abs(pilotpitch) < 0.5 then
-			integral = integral + I*error
-			integral = math.max(math.min(integral, max), min)
+		if OutputValue < MaximumOutput and OutputValue > MinimumOutput and math.abs(pilotpitch) < 0.5 then
+			Integral = Integral + I*error
+			Integral = math.max(math.min(Integral, MaximumOutput), MinimumOutput)
 		end
 											
 		Kp = P*error
-		Ki = integral
+		Ki = Integral
 		Kd = -D*diff
 											
-		out = Kp+Ki+Kd
-		out = math.max(math.min(out, max), min)
+		OutputValue = Kp+Ki+Kd
+		OutputValue = math.max(math.min(OutputValue, MaximumOutput), MinimumOutput)
 											
 	else
-		integral = 0
-		out = 0
+		Integral = 0
+		OutputValue = 0
 	end
 											
-	pvOld = pv
+	ProcessVariableOld = processVariable
 											
-	if right then out = -out end
+	if right then OutputValue = -OutputValue end
 											
-	output.setNumber(1, out+trim)
+	output.setNumber(1, OutputValue+trim)
 end
